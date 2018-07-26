@@ -35,7 +35,7 @@ public class LogUtil {
                 //向info赋值
                 info.put(EventLogsConstant.EVENT_COLUMN_NAME_IP,fields[0]);
                 info.put(EventLogsConstant.EVENT_COLUMN_NAME_SERVER_TIME,
-                        fields[1].replaceAll(".",""));
+                        fields[1].replaceAll("\\.",""));
                 //判断是否有参数列表
                 int index = fields[3].indexOf("?");
                 if(index > 0){

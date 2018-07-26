@@ -49,7 +49,7 @@ public class EventLogsConstant {
     /**
      * 和日志相关
      */
-    public static final String HABSE_TABLE_NAME = "logs";
+    public static final String HBASE_TABLE_NAME = "logs";
 
     public static final String HBASE_COLUMN_FAMILY = "info";
 

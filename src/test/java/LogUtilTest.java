@@ -14,5 +14,4 @@ public class LogUtilTest {
             System.out.println(m.getKey()+":"+m.getValue());
         }
     }
-
 }
