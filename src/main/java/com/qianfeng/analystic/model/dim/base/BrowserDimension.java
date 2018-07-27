@@ -28,6 +28,12 @@ public class BrowserDimension extends BaseDimension{
         this.browserVersion = browserVersion;
     }
 
+    public BrowserDimension(int id,String browserName, String browserVersion) {
+        this(browserName,browserVersion);
+        this.id = id;
+    }
+
+
     /**
      * 获取当前类的实例
      * @param browserName

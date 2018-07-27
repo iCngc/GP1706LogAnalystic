@@ -26,6 +26,11 @@ public class PlatformDimension extends BaseDimension{
         this.platformName = platformName;
     }
 
+    public PlatformDimension(int id,String platformName) {
+        this.platformName = platformName;
+        this.id = id;
+    }
+
     /**
      * 构建平台维度的集合对象
      * @param platformName
