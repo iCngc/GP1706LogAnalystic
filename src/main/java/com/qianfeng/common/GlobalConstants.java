@@ -1,4 +1,4 @@
-package com.qianfeng;
+package com.qianfeng.common;
 
 /**
  * @Auther: lyd
@@ -8,4 +8,8 @@ package com.qianfeng;
 public class GlobalConstants {
 
     public static final String RUNNING_DATE = "running_date";
+
+    public static final String DEFAULT_VALUE = "unknown";
+
+    public static final String ALL_OF_VALUE = "all";
 }

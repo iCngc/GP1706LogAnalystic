@@ -1,6 +1,6 @@
 package com.qianfeng.etl.mr.tohdfs;
 
-import com.qianfeng.GlobalConstants;
+import com.qianfeng.common.GlobalConstants;
 import com.qianfeng.util.TimeUtil;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;

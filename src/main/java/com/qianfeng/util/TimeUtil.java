@@ -1,6 +1,7 @@
 package com.qianfeng.util;
 
 
+import com.qianfeng.common.DateEnum;
 import org.apache.log4j.Logger;
 
 import java.text.ParseException;
@@ -106,6 +107,21 @@ public class TimeUtil {
         return new SimpleDateFormat(format).format(calendar.getTime());
     }
 
+    /***
+     * 根据时间戳获取时间相关信息
+     * @param time
+     * @param type
+     * @return
+     */
+    public static int getDateInfo(long time, DateEnum type) {
+
+        return  0;
+    }
+
+    public static long getFirstDayOfWeek(long time) {
+        return 0;
+    }
+
 
     public static void main(String[] args) {
 //        System.out.println(isValidateDate("2018-7-26"));
@@ -113,6 +129,7 @@ public class TimeUtil {
         System.out.println(parserString2Long("2018-07-26"));
         System.out.println(parserLong2String(1532534400000L));
     }
+
 
 
 }
