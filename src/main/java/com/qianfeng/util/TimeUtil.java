@@ -114,20 +114,57 @@ public class TimeUtil {
      * @return
      */
     public static int getDateInfo(long time, DateEnum type) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(time);
+        if(type.equals(DateEnum.YEAR)){
+            return calendar.get(Calendar.YEAR);
+        }
+        if(type.equals(DateEnum.SEASON)){
+            int month = calendar.get(Calendar.MONTH) + 1;
+            return (month +2) / 3;
+        }
+        if(type.equals(DateEnum.MONTH)){
+            return calendar.get(Calendar.MONTH) + 1;
+        }
+        if(type.equals(DateEnum.WEEK)){
+            return calendar.get(Calendar.WEEK_OF_YEAR);
+        }
 
-        return  0;
+        if(type.equals(DateEnum.DAY)){
+            return calendar.get(Calendar.DAY_OF_MONTH);
+        }
+        if(type.equals(DateEnum.HOUR)){
+            return calendar.get(Calendar.HOUR_OF_DAY);
+        }
+        throw  new RuntimeException("该type不支持获取对应值."+type.type);
     }
 
+    /**
+     * 根据时间戳获取时间戳所在周第一天的时间戳
+     * @param time
+     * @return
+     */
     public static long getFirstDayOfWeek(long time) {
-        return 0;
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(time);
+        calendar.set(Calendar.DAY_OF_WEEK,1);
+        calendar.set(Calendar.HOUR_OF_DAY,0);
+        calendar.set(Calendar.MINUTE,0);
+        calendar.set(Calendar.SECOND,0);
+        calendar.set(Calendar.MILLISECOND,0);
+        return calendar.getTimeInMillis();
     }
 
 
     public static void main(String[] args) {
 //        System.out.println(isValidateDate("2018-7-26"));
 //        System.out.println(getYesterdayDate("yyyy/MM/dd"));
-        System.out.println(parserString2Long("2018-07-26"));
-        System.out.println(parserLong2String(1532534400000L));
+//        System.out.println(parserString2Long("2018-07-26"));
+//        System.out.println(parserLong2String(1532534400000L));
+        System.out.println(getDateInfo(1532534400000L,DateEnum.YEAR));
+        System.out.println(getDateInfo(1532534400000L,DateEnum.SEASON));
+        System.out.println(getDateInfo(1532534400000L,DateEnum.DAY));
+        System.out.println(getFirstDayOfWeek(1532534400000L));
     }
 
 
