@@ -52,6 +52,12 @@ public class NewUserMapper extends TableMapper<StatsUserDimension,TimeOutputValu
         this.v.setId(uuid);
         this.v.setTime(serverTimeOfLong);
 
+        /**
+         *
+         * 1532593870123 2018-07-26 website 27F69684-BBE3-42FA-AA62-71F98E208
+         *
+         */
+
         //构建输出的key
         List<PlatformDimension> platformDimensions = PlatformDimension.buildList(platform);
         DateDimension dateDimension = DateDimension.buildDate(serverTimeOfLong, DateEnum.DAY);
@@ -71,11 +77,12 @@ public class NewUserMapper extends TableMapper<StatsUserDimension,TimeOutputValu
             this.k.setBrowserDimension(defaultBrowser);
             //输出
             context.write(this.k,this.v);
+            /**
+             *
+             * datedimension platform kpi   v
+             * 1    2   new_user     1532593870123  27F69684-BBE3-42FA-AA62-71F98E208
+             * 1    1   new_user     1532593870123  27F69684-BBE3-42FA-AA62-71F98E208
+             */
         }
-
-
-
-
-
     }
 }

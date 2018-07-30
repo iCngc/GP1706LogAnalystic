@@ -28,6 +28,12 @@ public class NewUserReudcer extends Reducer<StatsUserDimension,TimeOutputValue,
         //清空unique
         this.unique.clear();
         //循环map阶段传过来的value
+        /**
+         *
+         * datedimension platform kpi   v
+         * 1    2   new_user     list(1532593870123  27F69684-BBE3-42FA-AA62-71F98E208)
+         * 1    1   new_user     list(1532593870123  27F69684-BBE3-42FA-AA62-71F98E208)
+         */
         for (TimeOutputValue tv:values) {
             //将uuid取出来添加到set中
             this.unique.add(tv.getId());
@@ -44,5 +50,6 @@ public class NewUserReudcer extends Reducer<StatsUserDimension,TimeOutputValue,
         }
         //输出即可
         context.write(key,this.v);
+
     }
 }
