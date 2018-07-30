@@ -3,6 +3,7 @@ package com.qianfeng.analystic.mr.service.impl;
 import com.qianfeng.analystic.model.dim.base.*;
 import com.qianfeng.analystic.mr.service.IDimensionConvert;
 import com.qianfeng.util.JdbcUtil;
+import jdk.nashorn.internal.scripts.JD;
 import org.apache.log4j.Logger;
 
 import java.io.IOException;
@@ -60,7 +61,7 @@ public class IDimensionConvertImpl implements IDimensionConvert{
             sqls = this.buildKpiSqls();
         }
 
-        Connection conn = null;
+        Connection conn = JdbcUtil.getConn();
         int id = -1;
         synchronized (this) {
            id = this.execute(sqls,dimension,conn);
