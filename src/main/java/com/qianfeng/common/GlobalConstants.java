@@ -20,4 +20,8 @@ public class GlobalConstants {
     public static final String USERNAME = "root";
 
     public static final String PASSWORD = "root";
+
+    public static final String PREFIX_OUTPUT = "output_";
+
+    public static final int NUM_OF_BATCH = 50;
 }

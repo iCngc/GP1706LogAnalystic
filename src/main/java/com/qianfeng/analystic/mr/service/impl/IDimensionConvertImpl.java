@@ -4,6 +4,7 @@ import com.qianfeng.analystic.model.dim.base.*;
 import com.qianfeng.analystic.mr.service.IDimensionConvert;
 import com.qianfeng.util.JdbcUtil;
 import jdk.nashorn.internal.scripts.JD;
+import org.apache.hadoop.mapreduce.lib.output.FileOutputCommitter;
 import org.apache.log4j.Logger;
 
 import java.io.IOException;
@@ -19,8 +20,6 @@ import java.util.Map;
  */
 public class IDimensionConvertImpl implements IDimensionConvert{
     private static final Logger logger = Logger.getLogger(IDimensionConvertImpl.class);
-    //用于存储维度：维度累计的sql个个数
-    public Map<String,Integer> batch = new HashMap<String,Integer>();
     // 维度：维度对应的id   缓存
     private Map<String,Integer> cache = new LinkedHashMap<String,Integer>(){
         @Override
@@ -66,6 +65,8 @@ public class IDimensionConvertImpl implements IDimensionConvert{
         synchronized (this) {
            id = this.execute(sqls,dimension,conn);
         }
+        //将获取到的id添加到缓存
+        this.cache.put(cacheKey,id);
         return id;
     }
 
