@@ -166,7 +166,4 @@ public class TimeUtil {
         System.out.println(getDateInfo(1532534400000L,DateEnum.DAY));
         System.out.println(getFirstDayOfWeek(1532534400000L));
     }
-
-
-
 }
