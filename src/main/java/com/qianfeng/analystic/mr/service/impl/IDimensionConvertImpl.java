@@ -84,8 +84,8 @@ public class IDimensionConvertImpl implements IDimensionConvert{
     }
 
     private String[] buildDateSqls() {
-        String select = "select `id` from `dimension_date` where `year`  = ? and `season` = ? and `month` = ? and `week` = ? and `day` = ? and `calendar = ? and `type` = ?";
-        String insert = "insert into dimension_date`(`year`,`season`, `month`,`week`,`day`,`calendar`,`type`) values(?,?,?,?,?,?,?)";
+        String select = "select `id` from `dimension_date` where `year`  = ? and `season` = ? and `month` = ? and `week` = ? and `day` = ? and `calendar` = ? and `type` = ?";
+        String insert = "insert into `dimension_date`(`year`,`season`, `month`,`week`,`day`,`calendar`,`type`) values(?,?,?,?,?,?,?)";
         return new String[]{select,insert};
     }
 
@@ -96,8 +96,8 @@ public class IDimensionConvertImpl implements IDimensionConvert{
     }
 
     private String[] buildKpiSqls() {
-        String select = "select `id` from `dimension_kpi` where `dimension_kpi` = ?";
-        String insert = "insert into `dimension_kpi`(`dimension_kpi`) values(?)";
+        String select = "select `id` from `dimension_kpi` where `kpi_name` = ?";
+        String insert = "insert into `dimension_kpi`(`kpi_name`) values(?)";
         return new String[]{select,insert};
     }
 

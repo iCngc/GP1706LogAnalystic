@@ -58,7 +58,7 @@ public class DateDimension extends BaseDimension{
      * @return
      */
     public static DateDimension buildDate(long time,DateEnum type){
-        int year = TimeUtil.getDateInfo(time,type);
+        int year = TimeUtil.getDateInfo(time,DateEnum.YEAR);
         Calendar calendar = Calendar.getInstance();
         calendar.clear();  //先先清除日历对象
         //判断type的类型

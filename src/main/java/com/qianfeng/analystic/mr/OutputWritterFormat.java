@@ -116,7 +116,7 @@ public class OutputWritterFormat extends OutputFormat<BaseDimension,OutputValueB
                     en.getValue().executeBatch();
                 }
             } catch (SQLException e) {
-                logger.warn("关闭对象时，执行sql异常");
+                logger.warn("关闭对象时，执行sql异常",e);
             }finally {
                 try {
                     for (Map.Entry<KpiType,PreparedStatement> en:map.entrySet()){

@@ -100,4 +100,8 @@ public class StatsUserDimension extends StatsBaseDimension{
     public void setBrowserDimension(BrowserDimension browserDimension) {
         this.browserDimension = browserDimension;
     }
+
+    public static void main(String[] args) {
+        System.out.println("88888888899999999999000000000000000");
+    }
 }
