@@ -23,6 +23,8 @@ public class GlobalConstants {
 
     public static final String PREFIX_OUTPUT = "output_";
 
+    public static final String PREFIX_TOTAL = "total_";
+
     public static final int NUM_OF_BATCH = 50;
 
     public static final long DAY_OF_MILISECONDS = 86400000L;//24*60*60*1000

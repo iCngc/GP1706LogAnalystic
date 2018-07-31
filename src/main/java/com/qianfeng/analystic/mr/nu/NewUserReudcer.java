@@ -45,9 +45,12 @@ public class NewUserReudcer extends Reducer<StatsUserDimension,TimeOutputValue,
 
         this.v.setValue(mapWritable);
         //还需要设置kpi
-        if(key.getStatsCommonDimension().getKpiDimension().getKpiName().equals(KpiType.NEW_USER.kpiName)){
+       this.v.setKpi(KpiType.valueOfType(key.getStatsCommonDimension().getKpiDimension().getKpiName()));
+        /*if(key.getStatsCommonDimension().getKpiDimension().getKpiName().equals(KpiType.NEW_USER.kpiName)){
             this.v.setKpi(KpiType.NEW_USER);
-        }
+        } else if(key.getStatsCommonDimension().getKpiDimension().getKpiName().equals(KpiType.BROWSER_NEW_USER.kpiName)){
+            this.v.setKpi(KpiType.BROWSER_NEW_USER);
+        }*/
         //输出即可
         context.write(key,this.v);
 

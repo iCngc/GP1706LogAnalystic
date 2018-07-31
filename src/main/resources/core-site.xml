@@ -42,11 +42,17 @@
 </property>
 
 
-<!--  -->
-<!--<property>
+<!--
+<property>
+    <name>mapreduce.framework.name</name>
+    <value>yarn</value>
+    <final>true</final>
+</property>
+
+<property>
     <name>yarn.resourcemanager.ha.enabled</name>
     <value>true</value>
-</property>-->
+</property>
 <property>
     <name>yarn.resourcemanager.cluster-id</name>
     <value>qianfengyarn</value>
@@ -57,11 +63,11 @@
 </property>
 <property>
     <name>yarn.resourcemanager.hostname.rm1</name>
-    <value>hadoop01:8032</value>
+    <value>hadoop01</value>
 </property>
 <property>
     <name>yarn.resourcemanager.hostname.rm2</name>
-    <value>hadoop02:8032</value>
+    <value>hadoop02</value>
 </property>
 
 <property>
@@ -72,6 +78,6 @@
 <property>
     <name>mapreduce.app-submission.cross-platform</name>
     <value>true</value>
-</property>
+</property>   -->
 
 </configuration>

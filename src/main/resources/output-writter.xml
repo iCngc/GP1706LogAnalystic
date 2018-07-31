@@ -7,4 +7,29 @@
         <value>com.qianfeng.analystic.mr.nu.NewUserOuputWrtter</value>
     </property>
 
+    <property>
+        <name>output_browser_new_user</name>
+        <value>com.qianfeng.analystic.mr.nu.NewUserOuputWrtter</value>
+    </property>
+
+    <property>
+    <name>output_active_user</name>
+    <value>com.qianfeng.analystic.mr.au.ActiveUserOuputWrtter</value>
+</property>
+
+    <property>
+        <name>output_browser_active_user</name>
+        <value>com.qianfeng.analystic.mr.au.ActiveUserOuputWrtter</value>
+    </property>
+
+    <property>
+        <name>output_active_member</name>
+        <value>com.qianfeng.analystic.mr.am.ActiveMemberOuputWrtter</value>
+    </property>
+
+    <property>
+        <name>output_browser_active_member</name>
+        <value>com.qianfeng.analystic.mr.am.ActiveMemberOuputWrtter</value>
+    </property>
+
 </configuration>

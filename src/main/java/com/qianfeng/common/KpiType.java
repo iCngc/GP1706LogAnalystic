@@ -7,7 +7,13 @@ package com.qianfeng.common;
  */
 public enum KpiType {
     NEW_USER("new_user"),
-    BROWSER_NEW_USER("browser_new_user");
+    BROWSER_NEW_USER("browser_new_user"),
+    ACTIVE_USER("active_user"),
+    BROWSER_ACTIVE_USER("browser_active_user"),
+    ACTIVE_MEMBER("active_member"),
+    BROWSER_ACTIVE_MEMBER("browser_active_member"),
+    ;
+
 
     public String kpiName;
 
@@ -20,7 +26,7 @@ public enum KpiType {
      * @param kpiName
      * @return
      */
-    public KpiType valueOfType(String kpiName){
+    public static KpiType valueOfType(String kpiName){
         for (KpiType kpi : values()){
             if(kpiName.equals(kpi.kpiName)){
                 return kpi;

@@ -31,6 +31,7 @@ public class NewUserMapper extends TableMapper<StatsUserDimension,TimeOutputValu
     private StatsUserDimension k = new StatsUserDimension();
     private TimeOutputValue v = new TimeOutputValue();
     private KpiDimension newUserKpi = new KpiDimension(KpiType.NEW_USER.kpiName);
+    private KpiDimension browserNewUserKpi = new KpiDimension(KpiType.BROWSER_NEW_USER.kpiName);
 
 
     @Override
@@ -39,6 +40,9 @@ public class NewUserMapper extends TableMapper<StatsUserDimension,TimeOutputValu
         String uuid = Bytes.toString(value.getValue(family,Bytes.toBytes(EventLogsConstant.EVENT_COLUMN_NAME_UUID)));
         String serverTime = Bytes.toString(value.getValue(family,Bytes.toBytes(EventLogsConstant.EVENT_COLUMN_NAME_SERVER_TIME)));
         String platform = Bytes.toString(value.getValue(family,Bytes.toBytes(EventLogsConstant.EVENT_COLUMN_NAME_PLATFORM)));
+        String browserName = Bytes.toString(value.getValue(family,Bytes.toBytes(EventLogsConstant.EVENT_COLUMN_NAME_BROWSER_NAME)));
+        String browserVersion = Bytes.toString(value.getValue(family,Bytes.toBytes(EventLogsConstant.EVENT_COLUMN_NAME_BROWSER_VERSION)));
+
 
         //对三个字段进行空判断
         if(StringUtils.isEmpty(uuid) || StringUtils.isEmpty(serverTime) || StringUtils.isEmpty(platform)){
@@ -61,17 +65,18 @@ public class NewUserMapper extends TableMapper<StatsUserDimension,TimeOutputValu
         //构建输出的key
         List<PlatformDimension> platformDimensions = PlatformDimension.buildList(platform);
         DateDimension dateDimension = DateDimension.buildDate(serverTimeOfLong, DateEnum.DAY);
+        List<BrowserDimension> browserDimensionList = BrowserDimension.buildList(browserName,browserVersion);
+
 
         StatsCommonDimension statsCommonDimension = this.k.getStatsCommonDimension();
         //为statsCommonDimension赋值
         statsCommonDimension.setDateDimension(dateDimension);
-        statsCommonDimension.setKpiDimension(newUserKpi);
 
         BrowserDimension defaultBrowser = new BrowserDimension("","");
 
         //循环平台维度集合对象
         for (PlatformDimension pl:platformDimensions) {
-
+            statsCommonDimension.setKpiDimension(newUserKpi);
             statsCommonDimension.setPlatformDimension(pl);
             this.k.setStatsCommonDimension(statsCommonDimension);
             this.k.setBrowserDimension(defaultBrowser);
@@ -83,6 +88,21 @@ public class NewUserMapper extends TableMapper<StatsUserDimension,TimeOutputValu
              * 1    2   new_user     1532593870123  27F69684-BBE3-42FA-AA62-71F98E208
              * 1    1   new_user     1532593870123  27F69684-BBE3-42FA-AA62-71F98E208
              */
+            //该循环的输出用于浏览器模块的新增用户指标统计
+            for (BrowserDimension br:browserDimensionList){
+                statsCommonDimension.setKpiDimension(browserNewUserKpi);
+                this.k.setStatsCommonDimension(statsCommonDimension);
+                this.k.setBrowserDimension(br);
+                //写出
+                context.write(this.k,this.v);
+                /**
+                 * 1    2   new_user  1   1532593870123  27F69684-BBE3-42FA-AA62-71F98E208
+                 * 1    1   new_user  1   1532593870123  27F69684-BBE3-42FA-AA62-71F98E208
+                 * 1    2   new_user  2   1532593870123  27F69684-BBE3-42FA-AA62-71F98E208
+                 * 1    1   new_user  2   1532593870123  27F69684-BBE3-42FA-AA62-71F98E208
+                 *
+                 */
+            }
         }
     }
 }

@@ -2,11 +2,16 @@ package com.qianfeng.analystic.mr.nu;
 
 import com.google.common.collect.Lists;
 import com.qianfeng.analystic.model.dim.StatsUserDimension;
+import com.qianfeng.analystic.model.dim.base.DateDimension;
 import com.qianfeng.analystic.model.dim.value.map.TimeOutputValue;
 import com.qianfeng.analystic.model.dim.value.reduce.MapWritableValue;
 import com.qianfeng.analystic.mr.OutputWritterFormat;
+import com.qianfeng.analystic.mr.service.IDimensionConvert;
+import com.qianfeng.analystic.mr.service.impl.IDimensionConvertImpl;
+import com.qianfeng.common.DateEnum;
 import com.qianfeng.common.EventLogsConstant;
 import com.qianfeng.common.GlobalConstants;
+import com.qianfeng.util.JdbcUtil;
 import com.qianfeng.util.TimeUtil;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.HBaseConfiguration;
@@ -19,7 +24,14 @@ import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
 import org.apache.log4j.Logger;
 
+import java.io.IOException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -63,6 +75,7 @@ public class NewUserRunner implements Tool{
     public void setConf(Configuration conf) {
         this.conf.addResource("query-mapping.xml");
         this.conf.addResource("output-writter.xml");
+        this.conf.addResource("total-mapping.xml");
         this.conf = HBaseConfiguration.create(this.conf);
     }
 
@@ -83,7 +96,7 @@ public class NewUserRunner implements Tool{
         //初始化mapper类
         //addDependencyJars : true则是本地提交集群运行，false是本地提交本地运行
         TableMapReduceUtil.initTableMapperJob(this.getScans(job),NewUserMapper.class,
-                StatsUserDimension.class, TimeOutputValue.class,job,true);
+                StatsUserDimension.class, TimeOutputValue.class,job,false);
 
         //reducer的设置
         job.setReducerClass(NewUserReudcer.class);
@@ -93,7 +106,97 @@ public class NewUserRunner implements Tool{
         //设置输出的格式类
         job.setOutputFormatClass(OutputWritterFormat.class);
 
-        return job.waitForCompletion(true)?0:1;
+//        return job.waitForCompletion(true)?0:1;
+        if(job.waitForCompletion(true)){
+            this.computeNewTotalUser(job);
+            return 0;
+        } else {
+            return 1;
+        }
+    }
+
+    /**
+     * 计算新增的总用户
+     *
+     * 1、获取运行当天的日期，然后再获取到运行当天前一天的日期，然后获取对应时间维度Id
+     * 2、当对应时间维度Id都大于0，则正常计算：查询前一天的新增总用户，获取当天的新增用户
+     * @param job
+     */
+    private void computeNewTotalUser(Job job) {
+        Connection conn = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        try {
+            //获取运行的日期
+            String date = job.getConfiguration().get(GlobalConstants.RUNNING_DATE);
+            long nowDay = TimeUtil.parserString2Long(date);
+            long yesterDay = nowDay - GlobalConstants.DAY_OF_MILISECONDS;
+
+            //获取对应的时间维度
+            DateDimension nowDateDimension = DateDimension.buildDate(nowDay, DateEnum.DAY);
+            DateDimension yesterdayDateDimension = DateDimension.buildDate(yesterDay, DateEnum.DAY);
+
+            int nowDimensionId = -1;
+            int yesterDimensionId = -1;
+
+            //获取维度的id
+            IDimensionConvert convert = new IDimensionConvertImpl();
+            nowDimensionId = convert.getDimensionIdByDimension(nowDateDimension);
+            yesterDimensionId = convert.getDimensionIdByDimension(yesterdayDateDimension);
+
+            //判断昨天和今天的维度Id是否大于0
+            conn = JdbcUtil.getConn();
+            Map<String,Integer> map = new HashMap<String,Integer>();
+            if(yesterDimensionId > 0){
+                ps = conn.prepareStatement(conf.get(GlobalConstants.PREFIX_TOTAL+"new_total_user"));
+                //赋值
+                ps.setInt(1,yesterDimensionId);
+                //执行
+                rs = ps.executeQuery();
+                while (rs.next()){
+                    int platformId = rs.getInt("platform_dimension_id");
+                    int totalNewUser = rs.getInt("total_install_users");
+                    //存储
+                    map.put(platformId+"",totalNewUser);
+                }
+            }
+
+            if(nowDimensionId > 0){
+                ps = conn.prepareStatement(conf.get(GlobalConstants.PREFIX_TOTAL+"user_new_user"));
+                //赋值
+                ps.setInt(1,nowDimensionId);
+                //执行
+                rs = ps.executeQuery();
+                while (rs.next()){
+                    int platformId = rs.getInt("platform_dimension_id");
+                    int newUser = rs.getInt("new_install_users");
+                    //存储
+                   if(map.containsKey(platformId+"")){
+                        newUser += map.get(platformId+"");
+                   }
+                   map.put(platformId+"",newUser);
+                }
+            }
+
+            //更新新增的总用户
+            ps = conn.prepareStatement(conf.get(GlobalConstants.PREFIX_TOTAL+"user_new_update_user"));
+            //赋值
+            for (Map.Entry<String,Integer> en:map.entrySet()){
+                ps.setInt(1,nowDimensionId);
+                ps.setInt(2,Integer.parseInt(en.getKey()));
+                ps.setInt(3,en.getValue());
+                ps.setString(4,conf.get(GlobalConstants.RUNNING_DATE));
+                ps.setInt(5,en.getValue());
+                ps.execute();
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            JdbcUtil.close(conn,ps,rs);
+        }
     }
 
     /**
@@ -145,7 +248,9 @@ public class NewUserRunner implements Tool{
           EventLogsConstant.EVENT_COLUMN_NAME_SERVER_TIME,
           EventLogsConstant.EVENT_COLUMN_NAME_UUID,
           EventLogsConstant.EVENT_COLUMN_NAME_PLATFORM,
-          EventLogsConstant.EVENT_COLUMN_NAME_EVENT_NAME
+          EventLogsConstant.EVENT_COLUMN_NAME_EVENT_NAME,
+          EventLogsConstant.EVENT_COLUMN_NAME_BROWSER_NAME,
+          EventLogsConstant.EVENT_COLUMN_NAME_BROWSER_VERSION
         };
         //将扫描的字段添加到filter中
         fl.addFilter(this.getFilters(fields));

@@ -7,6 +7,7 @@ import com.qianfeng.analystic.model.dim.value.reduce.MapWritableValue;
 import com.qianfeng.analystic.mr.OutputWritter;
 import com.qianfeng.analystic.mr.service.IDimensionConvert;
 import com.qianfeng.common.GlobalConstants;
+import com.qianfeng.common.KpiType;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.io.IntWritable;
 
@@ -23,6 +24,7 @@ public class NewUserOuputWrtter implements OutputWritter{
     @Override
     public void outputWrite(Configuration conf, BaseDimension key, OutputValueBaseWritable value, PreparedStatement ps, IDimensionConvert convert) throws IOException, SQLException {
         StatsUserDimension statsUserDimension = (StatsUserDimension) key;
+        MapWritableValue v = (MapWritableValue) value;
         int newUsers = ((IntWritable) ((MapWritableValue)value).
                 getValue().get(new IntWritable(-1))).get();
 
@@ -30,6 +32,9 @@ public class NewUserOuputWrtter implements OutputWritter{
         int i = 0;
         ps.setInt(++i,convert.getDimensionIdByDimension(statsUserDimension.getStatsCommonDimension().getDateDimension()));
         ps.setInt(++i,convert.getDimensionIdByDimension(statsUserDimension.getStatsCommonDimension().getPlatformDimension()));
+        if(v.getKpi().equals(KpiType.BROWSER_NEW_USER)){
+            ps.setInt(++i,convert.getDimensionIdByDimension(statsUserDimension.getBrowserDimension()));
+        }
         ps.setInt(++i,newUsers);
         ps.setString(++i,conf.get(GlobalConstants.RUNNING_DATE));
         ps.setInt(++i,newUsers);
