@@ -15,7 +15,7 @@ import java.sql.SQLException;
  * @Date: 2018/7/30 09:51
  * @Description:将reduce阶段的统计结果直接输出到mysql的库中。
  */
-public interface OutputWritter {
+public interface IOutputWritter {
 
     /**
      * 操作最终结果表的接口

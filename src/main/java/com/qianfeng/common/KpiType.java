@@ -12,6 +12,11 @@ public enum KpiType {
     BROWSER_ACTIVE_USER("browser_active_user"),
     ACTIVE_MEMBER("active_member"),
     BROWSER_ACTIVE_MEMBER("browser_active_member"),
+    NEW_MEMBER("new_member"),
+    BROWSER_NEW_MEMBER("browser_new_member"),
+    MEMBER_INFO("member_info"),
+    SESSION("session"),
+    BROWSER_SESSION("browser_session"),
     ;
 
 

@@ -1,4 +1,4 @@
-package com.qianfeng.analystic.mr.nu;
+package com.qianfeng.analystic.mr.am;
 
 import com.qianfeng.analystic.model.dim.StatsUserDimension;
 import com.qianfeng.analystic.model.dim.base.BaseDimension;
@@ -18,9 +18,9 @@ import java.sql.SQLException;
 /**
  * @Auther: lyd
  * @Date: 2018/7/30 11:07
- * @Description: 为新增用户的ps赋值
+ * @Description: 为活跃会员的ps赋值
  */
-public class NewUserOuputWrtter implements IOutputWritter {
+public class ActiveMemberOuputWrtter implements IOutputWritter {
     @Override
     public void outputWrite(Configuration conf, BaseDimension key, OutputValueBaseWritable value, PreparedStatement ps, IDimensionConvert convert) throws IOException, SQLException {
         StatsUserDimension statsUserDimension = (StatsUserDimension) key;
@@ -32,7 +32,7 @@ public class NewUserOuputWrtter implements IOutputWritter {
         int i = 0;
         ps.setInt(++i,convert.getDimensionIdByDimension(statsUserDimension.getStatsCommonDimension().getDateDimension()));
         ps.setInt(++i,convert.getDimensionIdByDimension(statsUserDimension.getStatsCommonDimension().getPlatformDimension()));
-        if(v.getKpi().equals(KpiType.BROWSER_NEW_USER)){
+        if(v.getKpi().equals(KpiType.BROWSER_ACTIVE_MEMBER)){
             ps.setInt(++i,convert.getDimensionIdByDimension(statsUserDimension.getBrowserDimension()));
         }
         ps.setInt(++i,newUsers);

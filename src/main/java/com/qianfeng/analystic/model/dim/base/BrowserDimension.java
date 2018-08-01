@@ -68,6 +68,7 @@ public class BrowserDimension extends BaseDimension{
         return li;
     }
 
+
     @Override
     public void write(DataOutput out) throws IOException {
         out.writeInt(this.id);
