@@ -57,4 +57,19 @@
         <value>com.qianfeng.analystic.mr.session.SessionOutputWritter</value>
     </property>
 
+    <property>
+        <name>output_hourly_active_user</name>
+        <value>com.qianfeng.analystic.mr.au.ActiveUserOuputWrtter</value>
+    </property>
+
+    <property>
+        <name>output_pageview</name>
+        <value>com.qianfeng.analystic.mr.pv.PageviewOuputWrtter</value>
+    </property>
+
+    <property>
+        <name>output_local</name>
+        <value>com.qianfeng.analystic.mr.local.LocalOuputWrtter</value>
+    </property>
+
 </configuration>

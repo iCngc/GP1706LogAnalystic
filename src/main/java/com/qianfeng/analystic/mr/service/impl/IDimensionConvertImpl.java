@@ -54,10 +54,12 @@ public class IDimensionConvertImpl implements IDimensionConvert{
             sqls = this.buildDateSqls();
         } else if(dimension instanceof PlatformDimension){
             sqls = this.buildPlatformSqls();
-        } if(dimension instanceof BrowserDimension){
+        } else if(dimension instanceof BrowserDimension){
             sqls = this.buildBrowserSqls();
-        } if(dimension instanceof KpiDimension){
+        } else if(dimension instanceof KpiDimension){
             sqls = this.buildKpiSqls();
+        } else if(dimension instanceof LocationDimension){
+            sqls = this.buildLocalSqls();
         }
 
         Connection conn = JdbcUtil.getConn();
@@ -101,6 +103,12 @@ public class IDimensionConvertImpl implements IDimensionConvert{
         return new String[]{select,insert};
     }
 
+    private String[] buildLocalSqls() {
+        String select = "select `id` from `dimension_location` where `country` = ? and `province` = ? and `city` = ?";
+        String insert = "insert into `dimension_location`(`country` ,`province`,`city`) values(?,?,?)";
+        return new String[]{select,insert};
+    }
+
     private String buildCache(BaseDimension dimension) {
         StringBuffer sb = new StringBuffer();
         if(dimension instanceof DateDimension){
@@ -122,6 +130,13 @@ public class IDimensionConvertImpl implements IDimensionConvert{
             sb.append("kpi_");
             KpiDimension kpi = (KpiDimension) dimension;
             sb.append(kpi.getKpiName());
+
+        } else if(dimension instanceof LocationDimension){
+            sb.append("local_");
+            LocationDimension local = (LocationDimension) dimension;
+            sb.append(local.getCountry());
+            sb.append(local.getProvince());
+            sb.append(local.getCity());
 
         }
         return sb.length() == 0 ? null : sb.toString();
@@ -191,6 +206,11 @@ public class IDimensionConvertImpl implements IDimensionConvert{
             } else if(dimension instanceof KpiDimension){
                 KpiDimension kpi = (KpiDimension) dimension;
                 ps.setString(++i,kpi.getKpiName());
+            } else if(dimension instanceof LocationDimension){
+                LocationDimension local = (LocationDimension) dimension;
+                ps.setString(++i,local.getCountry());
+                ps.setString(++i,local.getProvince());
+                ps.setString(++i,local.getCity());
             }
         } catch (SQLException e) {
             logger.warn("设置参数异常.",e);

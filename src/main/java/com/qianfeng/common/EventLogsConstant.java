@@ -102,6 +102,8 @@ public class EventLogsConstant {
 
     /**
      * 事件相关
+     * 点击：点击事件 category   点赞、收藏、喜欢、转发
+     * 下单：下单事件
      */
     public static final String EVENT_COLUMN_NAME_EVENT_CATEGORY = "ca";
 

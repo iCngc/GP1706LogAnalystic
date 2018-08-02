@@ -43,7 +43,7 @@ public class SessionReudcer extends Reducer<StatsUserDimension,TimeOutputValue,
             if(map.containsKey(tv.getId())){
                 List<Long> li = map.get(sessionId);
                 li.add(serverTime);
-//                map.put(sessionId,li);
+                map.put(sessionId,li);
             } else {
                 List<Long> li = new ArrayList<Long>();
                 li.add(serverTime);
@@ -60,8 +60,10 @@ public class SessionReudcer extends Reducer<StatsUserDimension,TimeOutputValue,
             if(en.getValue().size() >= 2){
                 Collections.sort(en.getValue());
                 sesssionLength += (en.getValue().get(en.getValue().size()-1) - en.getValue().get(0));
+                System.out.println(en.getKey()+"aaaaaa:"+sesssionLength);
             }
         }
+        System.out.println("aaaaaa:"+sesssionLength);
 
         if(sesssionLength > 0 && sesssionLength <= GlobalConstants.DAY_OF_MILISECONDS){
             //不足一秒算一秒

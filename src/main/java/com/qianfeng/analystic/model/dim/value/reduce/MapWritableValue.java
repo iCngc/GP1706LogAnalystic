@@ -15,7 +15,7 @@ import java.io.IOException;
  * @Description:用户模块和浏览器模块reduce阶段下的value的输出类型
  */
 public class MapWritableValue extends OutputValueBaseWritable{
-      private MapWritable value = new MapWritable();
+    private MapWritable value = new MapWritable();
     private KpiType kpi;
 
     @Override

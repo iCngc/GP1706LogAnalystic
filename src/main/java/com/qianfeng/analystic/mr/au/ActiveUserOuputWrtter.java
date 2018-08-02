@@ -10,6 +10,7 @@ import com.qianfeng.common.GlobalConstants;
 import com.qianfeng.common.KpiType;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.io.IntWritable;
+import org.apache.hadoop.io.MapWritable;
 
 import java.io.IOException;
 import java.sql.PreparedStatement;
@@ -25,19 +26,40 @@ public class ActiveUserOuputWrtter implements IOutputWritter {
     public void outputWrite(Configuration conf, BaseDimension key, OutputValueBaseWritable value, PreparedStatement ps, IDimensionConvert convert) throws IOException, SQLException {
         StatsUserDimension statsUserDimension = (StatsUserDimension) key;
         MapWritableValue v = (MapWritableValue) value;
-        int newUsers = ((IntWritable) ((MapWritableValue)value).
-                getValue().get(new IntWritable(-1))).get();
 
         //为ps赋值
         int i = 0;
-        ps.setInt(++i,convert.getDimensionIdByDimension(statsUserDimension.getStatsCommonDimension().getDateDimension()));
-        ps.setInt(++i,convert.getDimensionIdByDimension(statsUserDimension.getStatsCommonDimension().getPlatformDimension()));
-        if(v.getKpi().equals(KpiType.BROWSER_ACTIVE_USER)){
-            ps.setInt(++i,convert.getDimensionIdByDimension(statsUserDimension.getBrowserDimension()));
+        switch (v.getKpi()){
+            case ACTIVE_USER:
+            case BROWSER_ACTIVE_USER:
+                int newUsers = ((IntWritable) ((MapWritableValue)value).
+                        getValue().get(new IntWritable(-1))).get();
+
+                ps.setInt(++i,convert.getDimensionIdByDimension(statsUserDimension.getStatsCommonDimension().getDateDimension()));
+                ps.setInt(++i,convert.getDimensionIdByDimension(statsUserDimension.getStatsCommonDimension().getPlatformDimension()));
+                if(v.getKpi().equals(KpiType.BROWSER_ACTIVE_USER)){
+                    ps.setInt(++i,convert.getDimensionIdByDimension(statsUserDimension.getBrowserDimension()));
+                }
+                ps.setInt(++i,newUsers);
+                ps.setString(++i,conf.get(GlobalConstants.RUNNING_DATE));
+                ps.setInt(++i,newUsers);
+                break;
+            case HOURLY_ACTIVE_USER:
+                ps.setInt(++i,convert.getDimensionIdByDimension(statsUserDimension.getStatsCommonDimension().getDateDimension()));
+                System.out.println("aaaa"+convert.getDimensionIdByDimension(statsUserDimension.getStatsCommonDimension().getPlatformDimension()));
+                ps.setInt(++i,convert.getDimensionIdByDimension(statsUserDimension.getStatsCommonDimension().getPlatformDimension()));
+                ps.setInt(++i,convert.getDimensionIdByDimension(statsUserDimension.getStatsCommonDimension().getKpiDimension()));
+                for(i++;i<28;i++){
+                    ps.setInt(i,((IntWritable)((MapWritable)v.getValue()).get(new IntWritable(i-4))).get());
+
+                    ps.setInt(i+25,((IntWritable)((MapWritable)v.getValue()).get(new IntWritable(i-4))).get());
+                }
+                ps.setString(i,conf.get(GlobalConstants.RUNNING_DATE));
+                System.out.println(ps);
+                break;
+            default:
+                break;
         }
-        ps.setInt(++i,newUsers);
-        ps.setString(++i,conf.get(GlobalConstants.RUNNING_DATE));
-        ps.setInt(++i,newUsers);
 
         //添加到批处理中
         ps.addBatch();

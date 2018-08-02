@@ -17,6 +17,10 @@ public enum KpiType {
     MEMBER_INFO("member_info"),
     SESSION("session"),
     BROWSER_SESSION("browser_session"),
+    HOURLY_ACTIVE_USER("hourly_active_user"),
+    HOURLY_SESSION("hourly_session"),
+    PAGEVIEW("pageview"),
+    LOCAL("local"),
     ;
 
 

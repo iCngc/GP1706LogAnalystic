@@ -106,11 +106,11 @@ public class IOutputFormat extends OutputFormat<BaseDimension,OutputValueBaseWri
                 iw.outputWrite(conf,key,value,ps,convert);  //该方法得对应的类去实现
 
                 //当达到一定batch就可以触发执行
-                //if(count % GlobalConstants.NUM_OF_BATCH == 0){
-                ps.executeBatch(); //批量执行
-                conn.commit(); //提交
-                batch.remove(kpi);
-                //}
+                if(count % GlobalConstants.NUM_OF_BATCH == 0){
+                    ps.executeBatch(); //批量执行
+                    conn.commit(); //提交
+                    batch.remove(kpi);
+                }
 
             } catch (Throwable e){
                 logger.warn("执行getRecordWritter方法失败。",e);
