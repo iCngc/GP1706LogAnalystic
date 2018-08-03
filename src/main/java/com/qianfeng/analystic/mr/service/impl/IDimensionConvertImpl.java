@@ -60,6 +60,8 @@ public class IDimensionConvertImpl implements IDimensionConvert{
             sqls = this.buildKpiSqls();
         } else if(dimension instanceof LocationDimension){
             sqls = this.buildLocalSqls();
+        } else if(dimension instanceof EventDimension){
+            sqls = this.buildEventSqls();
         }
 
         Connection conn = JdbcUtil.getConn();
@@ -109,6 +111,12 @@ public class IDimensionConvertImpl implements IDimensionConvert{
         return new String[]{select,insert};
     }
 
+    private String[] buildEventSqls() {
+        String select = "select `id` from `dimension_event` where `category` = ? and `action` = ?";
+        String insert = "insert into `dimension_event`(`category` ,`action`) values(?,?)";
+        return new String[]{select,insert};
+    }
+
     private String buildCache(BaseDimension dimension) {
         StringBuffer sb = new StringBuffer();
         if(dimension instanceof DateDimension){
@@ -137,7 +145,11 @@ public class IDimensionConvertImpl implements IDimensionConvert{
             sb.append(local.getCountry());
             sb.append(local.getProvince());
             sb.append(local.getCity());
-
+        } else if(dimension instanceof EventDimension){
+            sb.append("event_");
+            EventDimension event = (EventDimension) dimension;
+            sb.append(event.getCategory());
+            sb.append(event.getAction());
         }
         return sb.length() == 0 ? null : sb.toString();
     }
@@ -211,6 +223,10 @@ public class IDimensionConvertImpl implements IDimensionConvert{
                 ps.setString(++i,local.getCountry());
                 ps.setString(++i,local.getProvince());
                 ps.setString(++i,local.getCity());
+            } else if(dimension instanceof EventDimension){
+                EventDimension event = (EventDimension) dimension;
+                ps.setString(++i,event.getCategory());
+                ps.setString(++i,event.getAction());
             }
         } catch (SQLException e) {
             logger.warn("设置参数异常.",e);

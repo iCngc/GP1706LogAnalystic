@@ -1,7 +1,6 @@
 package com.qianfeng.analystic.mr;
 
 
-
 import com.qianfeng.analystic.model.dim.base.BaseDimension;
 import com.qianfeng.analystic.model.dim.value.OutputValueBaseWritable;
 import com.qianfeng.analystic.mr.service.IDimensionConvert;
@@ -10,11 +9,7 @@ import com.qianfeng.common.GlobalConstants;
 import com.qianfeng.common.KpiType;
 import com.qianfeng.util.JdbcUtil;
 import org.apache.hadoop.conf.Configuration;
-
-import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.mapreduce.*;
-import org.apache.hadoop.mapreduce.lib.db.DBInputFormat;
-import org.apache.hadoop.mapreduce.lib.db.DBOutputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputCommitter;
 import org.apache.log4j.Logger;
 
