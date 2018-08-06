@@ -12,7 +12,7 @@ stored as orc;
 
 
 导入数据：
-from logs
+from ods_logs
 insert overwrite table dw_dp partition(month=7,day=27)
 select s_time,pl,p_url,u_ud,u_sid
 where month = 7

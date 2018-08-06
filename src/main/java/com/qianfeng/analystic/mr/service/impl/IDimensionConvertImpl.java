@@ -62,6 +62,10 @@ public class IDimensionConvertImpl implements IDimensionConvert{
             sqls = this.buildLocalSqls();
         } else if(dimension instanceof EventDimension){
             sqls = this.buildEventSqls();
+        } else if(dimension instanceof CurrencyTypeDimension){
+            sqls = this.buildCurrencySqls(dimension);
+        } else if(dimension instanceof PaymentTypeDimension){
+            sqls = this.buildPaymentSqls(dimension);
         }
 
         Connection conn = JdbcUtil.getConn();
@@ -117,6 +121,18 @@ public class IDimensionConvertImpl implements IDimensionConvert{
         return new String[]{select,insert};
     }
 
+    private String[] buildPaymentSqls(BaseDimension dimension) {
+        String query = "select id from `dimension_payment_type` where `payment_type` = ?";
+        String insert = "insert into `dimension_payment_type`(`payment_type`) values(?)";
+        return new String[]{query,insert};
+    }
+
+    private String[] buildCurrencySqls(BaseDimension dimension) {
+        String query = "select id from `dimension_currency_type` where `currency_name` = ?";
+        String insert = "insert into `dimension_currency_type`(`currency_name`) values(?)";
+        return new String[]{query,insert};
+    }
+
     private String buildCache(BaseDimension dimension) {
         StringBuffer sb = new StringBuffer();
         if(dimension instanceof DateDimension){
@@ -150,6 +166,14 @@ public class IDimensionConvertImpl implements IDimensionConvert{
             EventDimension event = (EventDimension) dimension;
             sb.append(event.getCategory());
             sb.append(event.getAction());
+        } else if(dimension instanceof PaymentTypeDimension){
+            sb.append("payment_");
+            PaymentTypeDimension payment = (PaymentTypeDimension) dimension;
+            sb.append(payment.getPaymentType());
+        } else if(dimension instanceof CurrencyTypeDimension){
+            sb.append("currency_");
+            CurrencyTypeDimension currency = (CurrencyTypeDimension) dimension;
+            sb.append(currency.getCurrencyName());
         }
         return sb.length() == 0 ? null : sb.toString();
     }
@@ -227,6 +251,12 @@ public class IDimensionConvertImpl implements IDimensionConvert{
                 EventDimension event = (EventDimension) dimension;
                 ps.setString(++i,event.getCategory());
                 ps.setString(++i,event.getAction());
+            } else if(dimension instanceof PaymentTypeDimension){
+                PaymentTypeDimension payment = (PaymentTypeDimension) dimension;
+                ps.setString(++i,payment.getPaymentType());
+            } else if(dimension instanceof CurrencyTypeDimension){
+                CurrencyTypeDimension currency = (CurrencyTypeDimension) dimension;
+                ps.setString(++i,currency.getCurrencyName());
             }
         } catch (SQLException e) {
             logger.warn("设置参数异常.",e);

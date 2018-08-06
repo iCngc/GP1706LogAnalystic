@@ -39,6 +39,7 @@ partitioned by(month String,day string)
 row format delimited fields terminated by '\001'
 ;
 
+load data inpath '/ods/month=07/day=27' into table ods_logs partition(month=07,day=27);
 load data inpath '/ods/month=07/day=27' into table logs partition(month=07,day=27);
 
 
@@ -48,6 +49,12 @@ load data inpath '/ods/month=07/day=27' into table logs partition(month=07,day=2
 create function date_convert as 'com.qianfeng.analystic.hive.DateDimensionUdf' using jar "hdfs://qianfeng/logs/udfjars/GP1706LogAnalystic-1.0.jar";
 create function platform_convert as 'com.qianfeng.analystic.hive.PlatformDimensionUdf' using jar "hdfs://qianfeng/logs/udfjars/GP1706LogAnalystic-1.0.jar";
 create function event_convert as 'com.qianfeng.analystic.hive.EventDimensionUdf' using jar "hdfs://qianfeng/logs/udfjars/GP1706LogAnalystic-1.0.jar";
+
+
+
+create function date_convert as 'com.qianfeng.analystic.hive.DateDimensionUdf' using jar "hdfs://hadoop01:9000/logs/udfjars/GP1706LogAnalystic-1.0.jar";
+create function platform_convert as 'com.qianfeng.analystic.hive.PlatformDimensionUdf' using jar "hdfs://hadoop01:9000/logs/udfjars/GP1706LogAnalystic-1.0.jar";
+create function event_convert as 'com.qianfeng.analystic.hive.EventDimensionUdf' using jar "hdfs://hadoop01:9000/logs/udfjars/GP1706LogAnalystic-1.0.jar";
 
 3、创建hive表映射每一天的数据，创建成分区表
 create table if not exists dw_en(

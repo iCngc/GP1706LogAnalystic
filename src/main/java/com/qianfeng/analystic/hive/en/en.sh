@@ -5,6 +5,7 @@ run_date=
 until [ $# -eq 0 ]
 do
 if [ $1'x' = '-dx' ]
+then
 shift
 run_date=$1
 fi
@@ -14,9 +15,9 @@ done
 
 if [ ${#run_date} != 10 ]
 then
-echo "$run_date"
-else
 run_date=`date -d "1 days ago" "+%Y-%m-%d"`
+else
+echo "$run_date"
 fi
 
 month=`date -d "$run_date" "+%m"`
@@ -28,7 +29,7 @@ echo "final running date is:${run_date},${month},${day}"
 ########
 ##############################################
 
-hive --datebase lda -e "
+hive --database lda -e "
 with tmp as(
 select
 from_unixtime(cast(de.s_time/1000 as bigint),'yyy-MM-dd') dt,
@@ -57,7 +58,7 @@ group by pl,dt,ca,ac
 echo "run sqoop statment..."
 sqoop export --connect jdbc:mysql://hadoop01:3306/result \
 --username root --password root --table stats_event \
---export-dir hdfs://qianfeng/user/hive/warehouse/lda.db/stats_event/* \
+--export-dir hdfs://hadoop01:9000/hive/lda.db/stats_event/* \
 --input-fields-terminated-by "\\001" --update-mode allowinsert \
 --update-key platform_dimension_id,date_dimension_id,event_dimension_id \
 ;

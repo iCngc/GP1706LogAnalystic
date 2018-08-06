@@ -160,7 +160,7 @@ public class TimeUtil {
 //        System.out.println(isValidateDate("2018-7-26"));
 //        System.out.println(getYesterdayDate("yyyy/MM/dd"));
 //        System.out.println(parserString2Long("2018-07-26"));
-//        System.out.println(parserLong2String(1532534400000L));
+        System.out.println(parserLong2String(1532662110123L));
         System.out.println(getDateInfo(1532534400000L,DateEnum.YEAR));
         System.out.println(getDateInfo(1532534400000L,DateEnum.SEASON));
         System.out.println(getDateInfo(1532534400000L,DateEnum.DAY));
