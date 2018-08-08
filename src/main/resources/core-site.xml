@@ -2,6 +2,13 @@
 <?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
 
 <configuration>
+    <property>
+        <name>fs.defaultFS</name>
+        <value>hdfs://hadoop01:9000</value>
+    </property>
+
+<!--
+
 <property>
   <name>fs.defaultFS</name>
   <value>hdfs://qianfeng</value>
@@ -40,6 +47,7 @@
     <name>dfs.ha.automatic-failover.enabled</name>
     <value>true</value>
 </property>
+-->
 
 
 <!--
